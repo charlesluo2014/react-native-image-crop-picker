@@ -1,5 +1,5 @@
 # react-native-image-crop-picker
-iOS/Android image picker with support for camera, video compression, multiple images and cropping
+iOS/Android image picker with support for camera, configurable compression, multiple images and cropping
 
 ## Result
 
@@ -47,6 +47,17 @@ ImagePicker.openCamera({
 });
 ```
 
+#### Crop picture
+```javascript
+ImagePicker.openCropper({
+  path: 'my-file-path.jpg',
+  width: 300,
+  height: 400
+}).then(image => {
+  console.log(image);
+});
+```
+
 #### Optional cleanup
 Module is creating tmp images which are going to be cleaned up automatically somewhere in the future. If you want to force cleanup, you can use `clean` to clean all tmp files, or `cleanSingle(path)` to clean single tmp file.
 
@@ -70,9 +81,13 @@ ImagePicker.clean().then(() => {
 | cropperTintColor (android only) | string (default `"#424242"`) | When cropping image, determines the color of Toolbar and other UX elements.  Uses UCrop's `setToolbarColor, setActiveWidgetColor, and setStatusBarColor` with color specified. |
 | cropperCircleOverlay | bool (default false) | Enable or disable circular cropping mask. |
 | maxFiles (ios only) | number (default 5) | Max number of files to select when using `multiple` option |
-| compressVideo (ios only) | bool (default true) | When video is selected, compress it and convert it to mp4 |
 | smartAlbums (ios only) | array (default ['UserLibrary', 'PhotoStream', 'Panoramas', 'Videos', 'Bursts']) | List of smart albums to choose from |
 | useFrontCamera (ios only) | bool (default false) | Whether to default to the front/'selfie' camera when opened |
+| compressVideoPreset (ios only) | string (default MediumQuality) | Choose which preset will be used for video compression |
+| compressImageMaxWidth | number (default none) | Compress image with maximum width |
+| compressImageMaxHeight | number (default none) | Compress image with maximum height |
+| compressImageQuality | number (default 1) | Compress image with quality (from 0 to 1, where 1 is best quality) |
+| loadingLabelText (ios only) | string (default "Processing assets...") | Text displayed while photo is loading in picker |
 #### Response Object
 
 | Property        | Type           | Description  |
@@ -94,6 +109,8 @@ react-native link react-native-image-crop-picker
 #### Post-install steps
 
 ##### iOS
+
+In Xcode open Info.plist and add string key `NSPhotoLibraryUsageDescription` with value that describes why do you need access to user photos. More info here https://forums.developer.apple.com/thread/62229. Depending on what features you use, you also may need `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys.
 
 ###### cocoapods users
 
@@ -130,18 +147,6 @@ Details for second approach:
 1. Remove the pre-built frameworks from `Embedded Binaries`
 2. Build for Device
 4. Add the newly built binaries for both frameworks to `Embedded Binaries` (located at `Libraries/imageCropPicker/Libraries/_framework_name_.xcodeproj/Products/_framework_name_.framework`)
-
-## How it works?
-
-It is basically wrapper around few libraries
-
-#### Android
-- Native Image Picker
-- uCrop
-
-#### iOS
-- QBImagePickerController
-- RSKImageCropper
 
 ## License
 *MIT*
